@@ -179,6 +179,7 @@ const destroy = async (req, res) => {
     res.status(404).send(payload);
   }
 };
+
 exports.index = index;
 exports.store = store;
 exports.update = update;
