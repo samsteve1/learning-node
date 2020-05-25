@@ -1,19 +1,22 @@
-const { validate, Genere } = require("../models/genere");
+const { Customer, validate } = require("../models/customer");
 
 const index = async (req, res) => {
-  let generes = await Genere.find().sort({ name: 1 }).select({ name: 1 });
+  let customers = await Customer.find()
+    .sort({ name: 1 })
+    .select({ name: 1, phone: 1, isGold: 1 });
   let payload = {
     status: true,
-    data: generes,
+    data: customers,
   };
   res.send(payload);
 };
+
 const show = async (req, res) => {
   try {
-    let genere = await Genere.findById(req.params.id);
+    let customer = await Customer.findById(req.params.id);
     let payload = {
       status: true,
-      data: genere,
+      data: customer,
     };
     res.send(payload);
   } catch {
@@ -22,7 +25,7 @@ const show = async (req, res) => {
       data: {
         error: {
           code: 404,
-          message: `Genere with the ID ${req.params.id} not found.`,
+          message: `Customer with the ID ${req.params.id} not found.`,
         },
       },
     };
@@ -46,20 +49,27 @@ const store = async (req, res) => {
     };
     return res.status(422).send(error);
   }
-  let genere = new Genere({ name: req.body.name });
+
+  let customer = new Customer({
+    name: req.body.name,
+    phone: req.body.phone,
+    isGold: req.body.isGold,
+  });
+
   try {
-    genere = await genere.save();
+    customer = await customer.save();
     let payload = {
       status: true,
-      data: genere,
+      data: customer,
     };
+
     res.status(201).send(payload);
-  } catch (ex) {
+  } catch {
     let payload = {
       status: false,
       data: {
         error: {
-          msg: "unable to create genere.",
+          msg: "unable to create customer.",
         },
       },
     };
@@ -67,8 +77,9 @@ const store = async (req, res) => {
   }
 };
 
-const uppdate = async (req, res) => {
+const update = async (req, res) => {
   let result = validate(req.body);
+
   if (result.error) {
     let error = {
       status: false,
@@ -81,60 +92,62 @@ const uppdate = async (req, res) => {
     };
     return res.status(422).send(error);
   }
+
   try {
-    let genere = await Genere.findByIdAndUpdate(
+    let customer = await  Customer.findByIdAndUpdate(
       { _id: req.params.id },
       {
         $set: {
           name: req.body.name,
+          phone: req.body.phone,
+          isGold: req.body.isGold,
         },
       },
       { new: true }
     );
     let payload = {
       status: true,
-      data: genere,
+      data: customer,
     };
-    res.send(payload);
-  } catch (ex) {
+    res.send(payload)
+  } catch {
     let payload = {
       status: false,
       data: {
         error: {
-          msg: `${ex.message}`,
+          code: 422,
+          message: "Unable to update customer.",
         },
       },
     };
-    res.status(400).send(payload);
+    res.status(422).send(payload);
   }
 };
 
 const destroy = async (req, res) => {
-  let genere = await Genere.findByIdAndRemove(req.params.id);
-  if (genere) {
+  let customer = await Customer.findByIdAndRemove(req.params.id);
+  if (customer) {
     let payload = {
       status: true,
-      data: genere,
+      data: customer,
     };
-    res.status(200).send(payload);
-    return;
+    res.send(payload);
   } else {
     let payload = {
       status: false,
       data: {
         error: {
           code: 404,
-          message: `Genere with the ID ${req.params.id} not found.`,
+          message: `Customer with the ID ${req.params.id} not found.`,
         },
       },
     };
     res.status(404).send(payload);
-    return;
   }
 };
 
-module.exports.index = index;
-module.exports.show = show;
-module.exports.store = store;
-module.exports.update = uppdate;
-module.exports.destory = destroy;
+exports.index = index;
+exports.show = show;
+exports.update = update;
+exports.store = store;
+exports.destroy = destroy
