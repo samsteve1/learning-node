@@ -15,3 +15,4 @@ function validate(genere) {
 
 exports.validate = validate;
 exports.Genere = Genere;
+exports.genereSchema = genereSchema
