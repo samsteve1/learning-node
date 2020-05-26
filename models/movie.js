@@ -31,7 +31,7 @@ function validate(movie) {
     title: Joi.string().required(),
     numberInstock: Joi.number(),
     dailyRentalrate: Joi.number(),
-    genere_id: Joi.string().required()
+    genere_id: Joi.objectId().required()
   });
   return schem.validate(movie)
 }
