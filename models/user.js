@@ -1,5 +1,5 @@
 let Joi = require("@hapi/joi");
-const config = require('config')
+const config = require("config");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 
@@ -17,10 +17,15 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  roles: [String],
+  permissions: [String],
 });
 
 userSchema.methods.generateAuthToken = function () {
-  const token = jwt.sign({ _id: this._id }, config.get("jwtPrivateKey"));
+  const token = jwt.sign(
+    { _id: this._id, roles: this.roles, permissions: this.permissions },
+    config.get("jwtPrivateKey")
+  );
   return token;
 };
 const User = mongoose.model("User", userSchema);

@@ -6,26 +6,12 @@ const Fawn = require("fawn");
 Fawn.init(mongoose);
 
 const index = async (req, res) => {
-  try {
-    const rentals = await Rental.find().sort("-dateOut");
-    let payload = {
-      status: true,
-      data: rentals,
-    };
-    res.send(payload);
-  } catch (ex) {
-    let payload = {
-      status: false,
-      data: {
-        error: {
-          code: 400,
-          message: ex.message,
-        },
-      },
-    };
-
-    res.status(400).send(payload);
-  }
+  const rentals = await Rental.find().sort("-dateOut");
+  let payload = {
+    status: true,
+    data: rentals,
+  };
+  res.send(payload);
 };
 
 const store = async (req, res) => {
@@ -104,10 +90,10 @@ const store = async (req, res) => {
       )
       .run();
     let payload = {
-        status: true,
-        data: rental
-    }
-    res.send(payload)
+      status: true,
+      data: rental,
+    };
+    res.send(payload);
   } catch (ex) {
     let payload = {
       status: false,
