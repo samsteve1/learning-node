@@ -1,6 +1,4 @@
 let Joi = require("@hapi/joi");
-const config = require('config')
-const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { User } = require("../models/user");
 
@@ -45,7 +43,7 @@ const login = async (req, res) => {
     };
     return res.status(422).send(payload);
   }
-  const token = jwt.sign({_id: user.id}, config.get('jwtPrivateKey'));
+  const token = user.generateAuthToken();
   let payload = {
       status:true,
       data: {
