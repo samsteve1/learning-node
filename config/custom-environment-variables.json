@@ -1,4 +1,5 @@
 {
     "db_name": "vidly_db_name",
-    "db_pass": "vidly_db_pass"
+    "db_pass": "vidly_db_pass",
+    "jwtPrivateKey": "vidly_jwt_private_key"
 }

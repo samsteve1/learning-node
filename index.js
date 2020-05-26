@@ -12,6 +12,10 @@ const users = require("./routes/users");
 const auth = require("./routes/auth");
 const app = express();
 
+if(!config.get('jwtPrivateKey')) {
+  debug('FATAL: jwt private key not defined.')
+  process.exit(1)
+}
 app.use(express.json());
 app.use("/api/generes", generes);
 app.use("/api/customers", customers);
@@ -19,7 +23,6 @@ app.use("/api/movies", movies);
 app.use("/api/rentals", rentals);
 app.use("/api/users", users);
 app.use("/api/auth", auth);
-
 
 debug("Application name: " + config.get("name"));
 

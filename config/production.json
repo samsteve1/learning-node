@@ -1,3 +1,4 @@
 {
-    "name": "Vidly - Production"
+    "name": "Vidly - Production",
+    "jwtPrivateKey": ""
 }
