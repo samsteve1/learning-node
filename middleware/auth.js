@@ -9,7 +9,7 @@ module.exports = function (req, res, next) {
       data: {
         error: {
           code: 401,
-          message: "Unauthenticcated.",
+          message: "Unauthenticated.",
         },
       },
     };
