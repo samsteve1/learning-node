@@ -1,5 +1,5 @@
 let Joi = require("@hapi/joi");
-const mongoose = require("../database/db");
+const mongoose = require('mongoose')
 
 const customerSchema = new mongoose.Schema({
   name: { type: String, required: true, min: 3 },
