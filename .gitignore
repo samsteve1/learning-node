@@ -2,3 +2,4 @@
 async.js
 bcrypt.js
 promise.js
+coverage/
