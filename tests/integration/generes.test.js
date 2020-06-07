@@ -112,4 +112,88 @@ describe("/api/generes", () => {
       expect(res.body.data).toHaveProperty("name");
     });
   });
+
+  describe("PUT /:id", () => {
+    let token;
+    let name;
+    const genere = new Genere({
+      _id: mongoose.Types.ObjectId().toHexString(),
+      name: "Romance",
+    });
+    const exec = async () => {
+      return request(server)
+        .put(`/api/generes/${genere._id}`)
+        .set("x-auth-token", token)
+        .send({ name: name });
+    };
+
+    beforeEach(async () => {
+      await Genere.collection.insert(genere);
+      token = new User().generateAuthToken();
+    });
+    afterEach(async () => {
+      await Genere.remove({});
+    });
+
+    it("should return 401 if token is not sent", async () => {
+      token = "";
+      const res = await exec();
+      expect(res.status).toBe(401);
+    });
+
+    it("should return 422 if name is invalid", async () => {
+      name = "12";
+      const res = await exec();
+      expect(res.status).toBe(422);
+    });
+
+    it("should update genere name if valid name is sent", async () => {
+      name = "name updated";
+      const res = await exec();
+      expect(res.status).toBe(200);
+    });
+    it("should return updated genere after update", async () => {
+      name = "name updated";
+      await exec();
+      const res = await request(server).get(`/api/generes/${genere._id}`);
+      expect(res.status).toBe(200);
+      expect(res.body.data.name).toMatch(name);
+    });
+  });
+
+  describe("DELETE /:id", () => {
+    let token;
+    let genere = new Genere({
+      _id: mongoose.Types.ObjectId().toHexString(),
+      name: "Romance",
+    });
+    const exec = async () => {
+      return request(server)
+        .delete(`/api/generes/${genere._id}`)
+        .set("x-auth-token", token);
+    };
+
+    beforeEach(async () => {
+      await Genere.collection.insert(genere);
+      token = new User().generateAuthToken();
+    });
+    afterEach(async () => {
+      await Genere.remove({});
+    });
+    it("should return 401 if token is not set", async () => {
+      token = "";
+      const res = await exec();
+      expect(res.status).toBe(401);
+    });
+    it("should return 404 if genere doesnt exists", async () => {
+      genere._id = mongoose.Types.ObjectId().toHexString();
+      const res = await exec();
+      expect(res.status).toBe(404);
+    });
+    it("should delete genere if ID sent is valid", async () => {
+      const res = await exec();
+      expect(res.status).toBe(200);
+      expect(res.body.status).toBeTruthy();
+    });
+  });
 });
